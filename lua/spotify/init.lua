@@ -174,7 +174,10 @@ local function fetch_credentials(refresh_token, old_credentials)
         credentials.access_token = body.access_token
         credentials.expires_in = body.expires_in
 
+        vim.g['spotify-token'] = credentials.access_token
+
         file:write(json.encode(credentials))
+        file:close()
       else
         print(vim.inspect(res))
       end
