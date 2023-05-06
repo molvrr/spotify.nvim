@@ -153,7 +153,7 @@ local function urlencode(url)
 end
 
 local function fetch_credentials(refresh_token, old_credentials)
-  local credentials = credentials
+  local credentials = old_credentials
 
   Curl.post('https://accounts.spotify.com/api/token', {
     body = {
@@ -166,7 +166,7 @@ local function fetch_credentials(refresh_token, old_credentials)
     },
     callback = function(res)
       if res.status == 200 then
-        local file, err = io.open(user_config, 'w')
+        local file, err = io.open(user_config, 'r')
 
         local body = vim.json.decode(res.body)
 
@@ -176,7 +176,11 @@ local function fetch_credentials(refresh_token, old_credentials)
 
         vim.g['spotify-token'] = credentials.access_token
 
-        file:write(json.encode(credentials))
+        local data = vim.json.encode(credentials)
+
+        local file, err = io.open(user_config, 'w')
+
+        file:write(data)
         file:close()
       else
         print(vim.inspect(res))
