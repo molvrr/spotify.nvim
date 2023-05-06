@@ -3,21 +3,7 @@ local M = {}
 local Curl = require('plenary.curl')
 local Menu = require('nui.menu')
 local event = require('nui.utils.autocmd').event
-
-function M.play_track(track, album)
-  Curl.put('https://api.spotify.com/v1/me/player/play', {
-    body = vim.fn.json_encode({
-      -- context_uri = '', -- album a tocar
-      uris = {track},
-      position_ms = 0
-    }),
-    headers = {
-      authorization = 'Bearer ' .. vim.g['spotify-token']
-    },
-    callback = function()
-    end
-  })
-end
+local player = require('spotify.player')
 
 function M.enqueue_track(track)
   Curl.post('https://api.spotify.com/v1/me/player/queue', {
@@ -53,7 +39,7 @@ function M.search_track(track)
         for i, v in ipairs(data.tracks.items) do
           local item = Menu.item(string.format('%s - %s', v.artists[1].name, v.name),
             {
-              play = function() M.play_track(v.uri) end,
+              play = function() player.play_track(v.uri) end,
               enqueue = function() M.enqueue_track(v.uri) end
             })
           table.insert(tracks, item)
