@@ -183,6 +183,9 @@ local function fetch_credentials(refresh_token, old_credentials)
 end
 
 function M.setup(opts)
+  vim.g['spotify-client-id'] = opts.client_id
+  vim.g['spotify-client-secret'] = opts.client_secret
+
   local file, err = io.open(user_config, 'r')
 
   if not err then
@@ -193,8 +196,6 @@ function M.setup(opts)
     if delta <= 0 then
       fetch_credentials(refresh_token, credentials)
     else
-      vim.g['spotify-client-id'] = opts.client_id
-      vim.g['spotify-client-secret'] = opts.client_secret
       vim.g['spotify-token'] = credentials.access_token
     end
 
@@ -203,7 +204,7 @@ function M.setup(opts)
 
   local callback = urlencode(opts.callback)
 
-  local url = 'https://accounts.spotify.com/authorize?client_id='.. client_id ..'&response_type=code&redirect_uri='.. callback .. '&scope=user-modify-playback-state%20user-read-playback-state'
+  local url = 'https://accounts.spotify.com/authorize?client_id='.. vim.g['spotify-client-id'] ..'&response_type=code&redirect_uri='.. callback .. '&scope=user-modify-playback-state%20user-read-playback-state'
 
   local job = Job:new({
     command = 'ruby',
