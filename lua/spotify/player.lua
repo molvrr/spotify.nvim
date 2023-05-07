@@ -19,19 +19,28 @@ M.set_volume = function(vol)
     end
   })
 end
---
--- TODO: Colocar opção no require('spotify').setup({}) para definir os incrementos do volume
--- TODO: Armazenar volume direto em uma variável assim que iniciar o nvim, assim dá pra reduzir de execução do comando
-M.increase_volume = function()
-  local current_volume = M.get_playback_state().device.volume_percent
 
-  M.set_volume(current_volume + 10)
+-- TODO: Colocar opção no require('spotify').setup({}) para definir os incrementos do volume
+-- NOTE: Talvez armazenar o valor em uma variável possa ser um problema caso o usuário atualize o volume diretamente na UI do Spotify
+-- TODO: |- Pensar em uma forma de sincronizar
+M.increase_volume = function(inc)
+  if not vim.g['spotify-volume'] then
+    vim.g['spotify-volume'] = M.get_playback_state().device.volume_percent
+  end
+
+  vim.g['spotify-volume'] = vim.g['spotify-volume'] + inc
+
+  M.set_volume(vim.g['spotify-volume'])
 end
 
-M.decrease_volume = function()
-  local current_volume = M.get_playback_state().device.volume_percent
+M.decrease_volume = function(dec)
+  if not vim.g['spotify-volume'] then
+    vim.g['spotify-volume'] = M.get_playback_state().device.volume_percent
+  end
 
-  M.set_volume(current_volume - 10)
+  vim.g['spotify-volume'] = vim.g['spotify-volume'] - dec
+
+  M.set_volume(vim.g['spotify-volume'])
 end
 
 M.get_playback_state = function()
