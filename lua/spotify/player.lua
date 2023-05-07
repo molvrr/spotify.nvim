@@ -1,8 +1,27 @@
+local Curl = require('plenary.curl')
+local auth = require('spotify.auth')
+
 local M = {}
 
-local Curl = require('plenary.curl')
+M.auth_funcs = {}
+M.funcs = {}
 
-M.set_volume = function(vol)
+M.__index = function(tbl, k)
+  local auth_func = M.auth_funcs[k]
+  local func = M.funcs[k]
+
+  if auth_func then
+    auth.fetch_credentials()
+
+    return auth_func
+  end
+
+  return func
+end
+
+setmetatable(M, M)
+
+M.auth_funcs.set_volume = function(vol)
   Curl.put('https://api.spotify.com/v1/me/player/volume', {
     headers = {
       authorization = 'Bearer ' .. vim.g['spotify-token']
@@ -23,7 +42,7 @@ end
 -- TODO: Colocar opção no require('spotify').setup({}) para definir os incrementos do volume
 -- NOTE: Talvez armazenar o valor em uma variável possa ser um problema caso o usuário atualize o volume diretamente na UI do Spotify
 -- TODO: |- Pensar em uma forma de sincronizar
-M.increase_volume = function(inc)
+M.auth_funcs.increase_volume = function(inc)
   if not vim.g['spotify-volume'] then
     vim.g['spotify-volume'] = M.get_playback_state().device.volume_percent
   end
@@ -33,7 +52,7 @@ M.increase_volume = function(inc)
   M.set_volume(vim.g['spotify-volume'])
 end
 
-M.decrease_volume = function(dec)
+M.auth_funcs.decrease_volume = function(dec)
   if not vim.g['spotify-volume'] then
     vim.g['spotify-volume'] = M.get_playback_state().device.volume_percent
   end
@@ -43,7 +62,7 @@ M.decrease_volume = function(dec)
   M.set_volume(vim.g['spotify-volume'])
 end
 
-M.get_playback_state = function()
+M.auth_funcs.get_playback_state = function()
   local resp = Curl.get('https://api.spotify.com/v1/me/player', {
     headers = {
       authorization = 'Bearer ' .. vim.g['spotify-token']
@@ -57,7 +76,7 @@ M.get_playback_state = function()
   end
 end
 
-M.get_devices = function()
+M.auth_funcs.get_devices = function()
   local resp = Curl.get('https://api.spotify.com/v1/me/player/devices', {
     headers = {
       authorization = 'Bearer ' .. vim.g['spotify-token']
@@ -72,7 +91,7 @@ M.get_devices = function()
 end
 
 -- TODO: Memoize no dispositivo atual para que a interface fique responsiva
-M.play_track = function(track)
+M.auth_funcs.play_track = function(track)
   local devices = M.get_devices()
   local q = {}
   local b = {}

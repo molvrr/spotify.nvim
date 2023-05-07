@@ -1,10 +1,12 @@
 local M = {}
 
-local function char_to_hex (c)
+local base64 = require('spotify.utils.base64')
+
+local char_to_hex = function(c)
   return string.format("%%%02X", string.byte(c))
 end
 
-function M.urlencode(url)
+M.urlencode = function(url)
   if url == nil then
     return
   end

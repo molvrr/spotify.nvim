@@ -1,11 +1,30 @@
-local M = {}
-
 local Curl = require('plenary.curl')
 local Menu = require('nui.menu')
 local event = require('nui.utils.autocmd').event
 local player = require('spotify.player')
+local auth = require('spotify.auth')
 
-function M.enqueue_track(track)
+local M = {}
+
+M.auth_funcs = {}
+M.funcs = {}
+
+M.__index = function(tbl, k)
+  local auth_func = M.auth_funcs[k]
+  local func = M.funcs[k]
+
+  if auth_func then
+    auth.fetch_credentials()
+
+    return auth_func
+  end
+
+  return func
+end
+
+setmetatable(M, M)
+
+M.auth_funcs.enqueue_track = function(track)
   Curl.post('https://api.spotify.com/v1/me/player/queue', {
     query = {
       uri = track
@@ -21,7 +40,7 @@ function M.enqueue_track(track)
   })
 end
 
-function M.search_track(track)
+M.auth_funcs.search_track = function(track)
   Curl.get('https://api.spotify.com/v1/search', {
     query = {
       q = track,
