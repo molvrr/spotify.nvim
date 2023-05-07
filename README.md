@@ -23,3 +23,13 @@
   }
 }
 ```
+
+## TODO
+- [ ] I18n
+- [ ] Separar comportamento da aplicação da UI
+- [ ] Remover dependência do Plenary
+- [ ] Remover dependência do NUI
+- [ ] Remover dependência de Ruby
+- [ ] Deixar porta do servidor configurável
+- [ ] Resolver problemas de sincronização caso o usuário altere volume direto no Spotify
+- [ ] Memoize no device que o player#play_track utiliza

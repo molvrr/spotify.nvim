@@ -33,10 +33,6 @@ local set_volume = authenticate(function(vol)
   })
 end)
 
--- TODO: Colocar opção no require('spotify').setup({}) para definir os incrementos do volume
--- NOTE: Talvez armazenar o valor em uma variável possa ser um problema caso o usuário atualize o volume diretamente na UI do Spotify
--- TODO: |- Pensar em uma forma de sincronizar
-
 local increase_volume = authenticate(function(inc)
   if not vim.g['spotify-volume'] then
     vim.g['spotify-volume'] = get_playback_state().device.volume_percent
@@ -71,7 +67,6 @@ local get_devices = authenticate(function()
   end
 end)
 
--- TODO: Memoize no dispositivo atual para que a interface fique responsiva
 local play_track = authenticate(function(track)
   local devices = get_devices()
   local q = {}

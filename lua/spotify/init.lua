@@ -1,7 +1,3 @@
--- TODO: Escrever algo tipo I18n
--- TODO: Separar UI da lógica
--- NOTE: Talvez remover dependência de plenary e nui
-
 local Menu = require('nui.menu')
 local Input = require('nui.input')
 local event = require('nui.utils.autocmd').event
@@ -85,7 +81,7 @@ local setup = function(opts)
     args = {
       './server.rb',
       '-p',
-      '3000', -- TODO: Pegar porta de opts
+      '3000',
       user_config
     },
     on_stderr = function(aa, j)
