@@ -2,6 +2,8 @@ local M = {}
 
 -- TODO: Escrever algo tipo I18n
 -- TODO: Separar UI da lógica
+-- TODO: Todas requisições pra api precisam chamar o fetch_credentials para garantir que as credenciais estão atualizadas
+
 local Menu = require('nui.menu')
 local Input = require('nui.input')
 local event = require('nui.utils.autocmd').event
@@ -23,7 +25,7 @@ function M.prompt()
     border = {
       style = 'rounded',
       text = {
-        top = '[Música]',
+        top = '[Spotify]',
         top_align = 'center'
       }
     },
@@ -120,7 +122,7 @@ function M.setup(opts)
     args = {
       './server.rb',
       '-p',
-      '3000',
+      '3000', -- TODO: Pegar porta de opts
       user_config
     },
     on_stderr = function(aa, j)

@@ -71,6 +71,7 @@ M.get_devices = function()
   end
 end
 
+-- TODO: Memoize no dispositivo atual para que a interface fique responsiva
 M.play_track = function(track)
   local devices = M.get_devices()
   local q = {}
