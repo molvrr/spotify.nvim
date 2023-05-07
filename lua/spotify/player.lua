@@ -1,27 +1,9 @@
 local Curl = require('plenary.curl')
-local auth = require('spotify.auth')
+local authenticate = require('spotify.auth').authenticate
 
 local M = {}
 
-M.auth_funcs = {}
-M.funcs = {}
-
-M.__index = function(tbl, k)
-  local auth_func = M.auth_funcs[k]
-  local func = M.funcs[k]
-
-  if auth_func then
-    auth.fetch_credentials()
-
-    return auth_func
-  end
-
-  return func
-end
-
-setmetatable(M, M)
-
-M.auth_funcs.set_volume = function(vol)
+M.set_volume = authenticate(function(vol)
   Curl.put('https://api.spotify.com/v1/me/player/volume', {
     headers = {
       authorization = 'Bearer ' .. vim.g['spotify-token']
@@ -37,12 +19,13 @@ M.auth_funcs.set_volume = function(vol)
       end
     end
   })
-end
+end)
 
 -- TODO: Colocar opção no require('spotify').setup({}) para definir os incrementos do volume
 -- NOTE: Talvez armazenar o valor em uma variável possa ser um problema caso o usuário atualize o volume diretamente na UI do Spotify
 -- TODO: |- Pensar em uma forma de sincronizar
-M.auth_funcs.increase_volume = function(inc)
+
+M.increase_volume = authenticate(function(inc)
   if not vim.g['spotify-volume'] then
     vim.g['spotify-volume'] = M.get_playback_state().device.volume_percent
   end
@@ -50,9 +33,9 @@ M.auth_funcs.increase_volume = function(inc)
   vim.g['spotify-volume'] = vim.g['spotify-volume'] + inc
 
   M.set_volume(vim.g['spotify-volume'])
-end
+end)
 
-M.auth_funcs.decrease_volume = function(dec)
+M.decrease_volume = authenticate(function(dec)
   if not vim.g['spotify-volume'] then
     vim.g['spotify-volume'] = M.get_playback_state().device.volume_percent
   end
@@ -60,9 +43,9 @@ M.auth_funcs.decrease_volume = function(dec)
   vim.g['spotify-volume'] = vim.g['spotify-volume'] - dec
 
   M.set_volume(vim.g['spotify-volume'])
-end
+end)
 
-M.auth_funcs.get_playback_state = function()
+M.get_playback_state = authenticate(function()
   local resp = Curl.get('https://api.spotify.com/v1/me/player', {
     headers = {
       authorization = 'Bearer ' .. vim.g['spotify-token']
@@ -74,9 +57,9 @@ M.auth_funcs.get_playback_state = function()
   else
     return {}
   end
-end
+end)
 
-M.auth_funcs.get_devices = function()
+M.get_devices = authenticate(function()
   local resp = Curl.get('https://api.spotify.com/v1/me/player/devices', {
     headers = {
       authorization = 'Bearer ' .. vim.g['spotify-token']
@@ -88,17 +71,17 @@ M.auth_funcs.get_devices = function()
   else
     return {}
   end
-end
+end)
 
 -- TODO: Memoize no dispositivo atual para que a interface fique responsiva
-M.auth_funcs.play_track = function(track)
+M.play_track = authenticate(function(track)
   local devices = M.get_devices()
   local q = {}
   local b = {}
 
   if track.type == 'collection' then
     b = {
-        context_uri = track.uri, -- album a tocar
+        context_uri = track.uri,
         position_ms = 0
       }
   else
@@ -128,6 +111,6 @@ M.auth_funcs.play_track = function(track)
       end
     })
   end
-end
+end)
 
 return M

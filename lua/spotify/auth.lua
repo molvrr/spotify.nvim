@@ -58,4 +58,12 @@ M.fetch_credentials = function()
   })
 end
 
+M.authenticate = function(f)
+  return function(...)
+    M.fetch_credentials()
+
+    return f(...)
+  end
+end
+
 return M
