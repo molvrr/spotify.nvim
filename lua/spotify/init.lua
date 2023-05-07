@@ -3,6 +3,7 @@ local M = {}
 -- TODO: Escrever algo tipo I18n
 -- TODO: Separar UI da lógica
 -- TODO: Todas requisições pra api precisam chamar o fetch_credentials para garantir que as credenciais estão atualizadas
+-- NOTE: Talvez remover dependência de plenary e nui
 
 local Menu = require('nui.menu')
 local Input = require('nui.input')
@@ -49,11 +50,11 @@ function M.prompt()
     input:unmount()
   end)
 
-  input:mount()
-
   input:on(event.BufLeave, function()
     input:unmount()
   end)
+
+  input:mount()
 end
 
 local function fetch_credentials(refresh_token, old_credentials)
