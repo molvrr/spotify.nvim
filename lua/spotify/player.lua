@@ -15,6 +15,18 @@ local get_playback_state = authenticate(function()
   end
 end)
 
+local transfer_playback = authenticate(function(device)
+  Curl.put('https://api.spotify.com/v1/me/player', {
+    headers = {
+      authorization = 'Bearer ' .. vim.g['spotify-token']
+    },
+    body = vim.json.encode({
+      device_ids = { device },
+      play = true
+    })
+  })
+end)
+
 local set_volume = authenticate(function(vol)
   Curl.put('https://api.spotify.com/v1/me/player/volume', {
     headers = {
@@ -69,14 +81,13 @@ end)
 
 local play_track = authenticate(function(track)
   local devices = get_devices()
-  local q = {}
   local b = {}
 
   if track.type == 'collection' then
     b = {
-        context_uri = track.uri,
-        position_ms = 0
-      }
+      context_uri = track.uri,
+      position_ms = 0
+    }
   else
     b = {
       uris = { track.uri },
@@ -85,16 +96,10 @@ local play_track = authenticate(function(track)
   end
 
   if devices[1] then
-    Curl.put('https://api.spotify.com/v1/me/player/play', {
-      query = q,
-      body = vim.fn.json_encode(b),
-      headers = {
-        authorization = 'Bearer ' .. vim.g['spotify-token']
-      },
-      callback = function()
-      end
-    })
-  else
+    if not devices[1].is_active then
+      transfer_playback(devices[1].id)
+    end
+
     Curl.put('https://api.spotify.com/v1/me/player/play', {
       body = vim.fn.json_encode(b),
       headers = {
