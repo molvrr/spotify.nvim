@@ -39,7 +39,7 @@ function M.search_track(track)
         for i, v in ipairs(data.tracks.items) do
           local item = Menu.item(string.format('%s - %s', v.artists[1].name, v.name),
             {
-              play = function() player.play_track(v.uri) end,
+              play = function() player.play_track({ uri = v.uri, type = 'track' }) end,
               enqueue = function() M.enqueue_track(v.uri) end
             })
           table.insert(tracks, item)

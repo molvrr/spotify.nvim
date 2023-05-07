@@ -2,6 +2,8 @@ local M = {}
 
 local Curl = require('plenary.curl')
 
+local player = require('spotify.player')
+
 function M.get_playlists()
   local resp = Curl.get('https://api.spotify.com/v1/me/playlists', {
     query = {
