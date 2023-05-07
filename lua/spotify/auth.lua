@@ -39,7 +39,7 @@ local fetch_credentials = function()
           refresh_token = vim.g['spotify-refresh-token']
         }
 
-        vim.g['spotify-token'] = body.acess_token
+        vim.g['spotify-token'] = body.access_token
         vim.g['spotify-token-requested-at'] = requested_at
         vim.g['spotify-token-expires-in'] = body.expires_in
 
