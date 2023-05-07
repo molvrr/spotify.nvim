@@ -2,6 +2,12 @@
 
 ## Setup
 
+### Pré-requisitos
+- Sinatra (Ruby)
+- Aplicação configurada no [Spotify for Developers](https://developer.spotify.com/dashboard)
+
+### Lazy
+
 ```lua
 {
   'molvrr/spotify.nvim',
