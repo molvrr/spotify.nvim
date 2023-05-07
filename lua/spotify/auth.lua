@@ -1,12 +1,10 @@
-local M = {}
-
 local Curl = require('plenary.curl')
 local base64 = require('spotify.utils').base64
 
 local data_path = vim.fn.stdpath('data')
 local user_config = string.format('%s/spotify.json', data_path)
 
-M.fetch_credentials = function()
+local fetch_credentials = function()
   local refresh_token = vim.g['spotify-refresh-token']
   local client_id = vim.g['spotify-client-id']
   local client_secret = vim.g['spotify-client-secret']
@@ -58,12 +56,15 @@ M.fetch_credentials = function()
   })
 end
 
-M.authenticate = function(f)
+local authenticate = function(f)
   return function(...)
-    M.fetch_credentials()
+    fetch_credentials()
 
     return f(...)
   end
 end
 
-return M
+return {
+  authenticate = authenticate,
+  fetch_credentials = fetch_credentials,
+}

@@ -4,9 +4,7 @@ local event = require('nui.utils.autocmd').event
 local player = require('spotify.player')
 local authenticate = require('spotify.auth').authenticate
 
-local M = {}
-
-M.enqueue_track = authenticate(function(track)
+local enqueue_track = authenticate(function(track)
   Curl.post('https://api.spotify.com/v1/me/player/queue', {
     query = {
       uri = track
@@ -22,7 +20,7 @@ M.enqueue_track = authenticate(function(track)
   })
 end)
 
-M.search_track = authenticate(function(track)
+local search_track = authenticate(function(track)
   Curl.get('https://api.spotify.com/v1/search', {
     query = {
       q = track,
@@ -41,7 +39,7 @@ M.search_track = authenticate(function(track)
           local item = Menu.item(string.format('%s - %s', v.artists[1].name, v.name),
             {
               play = function() player.play_track({ uri = v.uri, type = 'track' }) end,
-              enqueue = function() M.enqueue_track(v.uri) end
+              enqueue = function() enqueue_track(v.uri) end
             })
           table.insert(tracks, item)
         end
@@ -84,4 +82,7 @@ M.search_track = authenticate(function(track)
   })
 end)
 
-return M
+return {
+  enqueue_track = enqueue_track,
+  search_track = search_track,
+}

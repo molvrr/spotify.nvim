@@ -1,5 +1,3 @@
-local M = {}
-
 -- TODO: Escrever algo tipo I18n
 -- TODO: Separar UI da lógica
 -- NOTE: Talvez remover dependência de plenary e nui
@@ -18,7 +16,7 @@ local urlencode = require('spotify.utils').urlencode
 local data_path = vim.fn.stdpath('data')
 local user_config = string.format('%s/spotify.json', data_path)
 
-M.prompt = function()
+local prompt = function()
   local input = Input({
     relative = 'editor',
     position = '50%',
@@ -57,7 +55,7 @@ M.prompt = function()
   input:mount()
 end
 
-M.setup = function(opts)
+local setup = function(opts)
   vim.g['spotify-client-id'] = opts.client_id
   vim.g['spotify-client-secret'] = opts.client_secret
 
@@ -99,4 +97,7 @@ M.setup = function(opts)
   print(string.format('Acesse %s para autorizar o plugin.', url))
 end
 
-return M
+return {
+  prompt = prompt,
+  setup = setup,
+}

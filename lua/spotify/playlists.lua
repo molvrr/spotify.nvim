@@ -1,10 +1,8 @@
-local M = {}
-
 local Curl = require('plenary.curl')
 local player = require('spotify.player')
 local authenticate = require('spotify.auth').authenticate
 
-M.get_playlists = authenticate(function()
+local get_playlists = authenticate(function()
   local resp = Curl.get('https://api.spotify.com/v1/me/playlists', {
     query = {
       limit = 50
@@ -21,4 +19,6 @@ M.get_playlists = authenticate(function()
   end
 end)
 
-return M
+return {
+  get_playlists = get_playlists,
+}
