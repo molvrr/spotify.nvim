@@ -1,5 +1,7 @@
 # Spotify.nvim
 
+:warning: **PLUGIN EM VERSÃO EXTREMAMENTE ALFA. ALGUMA COISA COM CERTEZA VAI QUEBRAR** :warning:
+
 ## Setup
 
 ### Pré-requisitos
