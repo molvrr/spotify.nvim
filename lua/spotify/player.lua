@@ -2,7 +2,7 @@ local M = {}
 
 local Curl = require('plenary.curl')
 
-M.set_volume = function(vol) -- TODO: Colocar opção no require('spotify').setup({}) para definir os incrementos do volume
+M.set_volume = function(vol)
   Curl.put('https://api.spotify.com/v1/me/player/volume', {
     headers = {
       authorization = 'Bearer ' .. vim.g['spotify-token']
@@ -10,11 +10,18 @@ M.set_volume = function(vol) -- TODO: Colocar opção no require('spotify').setu
     query = {
       volume_percent = vol % 101
     },
-    callback = function()
+    callback = function(res)
+      if res.status == 204 then
+        print(string.format('Volume: %d%%', vol))
+      else
+        print('Erro ao atualizar volume')
+      end
     end
   })
 end
-
+--
+-- TODO: Colocar opção no require('spotify').setup({}) para definir os incrementos do volume
+-- TODO: Armazenar volume direto em uma variável assim que iniciar o nvim, assim dá pra reduzir de execução do comando
 M.increase_volume = function()
   local current_volume = M.get_playback_state().device.volume_percent
 

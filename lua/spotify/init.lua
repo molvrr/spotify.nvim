@@ -1,5 +1,7 @@
 local M = {}
 
+-- TODO: Escrever algo tipo I18n
+-- TODO: Separar UI da lógica
 local Menu = require('nui.menu')
 local Input = require('nui.input')
 local event = require('nui.utils.autocmd').event
