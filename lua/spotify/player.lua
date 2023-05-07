@@ -2,6 +2,31 @@ local M = {}
 
 local Curl = require('plenary.curl')
 
+M.set_volume = function(vol) -- TODO: Colocar opção no require('spotify').setup({}) para definir os incrementos do volume
+  Curl.put('https://api.spotify.com/v1/me/player/volume', {
+    headers = {
+      authorization = 'Bearer ' .. vim.g['spotify-token']
+    },
+    query = {
+      volume_percent = vol % 101
+    },
+    callback = function()
+    end
+  })
+end
+
+M.increase_volume = function()
+  local current_volume = M.get_playback_state().device.volume_percent
+
+  M.set_volume(current_volume + 10)
+end
+
+M.decrease_volume = function()
+  local current_volume = M.get_playback_state().device.volume_percent
+
+  M.set_volume(current_volume - 10)
+end
+
 M.get_playback_state = function()
   local resp = Curl.get('https://api.spotify.com/v1/me/player', {
     headers = {
