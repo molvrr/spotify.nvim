@@ -4,7 +4,8 @@ local base64 = require('spotify.utils').base64
 local data_path = vim.fn.stdpath('data')
 local user_config = string.format('%s/spotify.json', data_path)
 
-local fetch_credentials = function()
+local fetch_credentials
+fetch_credentials = function()
   local refresh_token = vim.g['spotify-refresh-token']
   local client_id = vim.g['spotify-client-id']
   local client_secret = vim.g['spotify-client-secret']
@@ -49,6 +50,8 @@ local fetch_credentials = function()
 
         file:write(data)
         file:close()
+
+        vim.defer_fn(fetch_credentials, body.expires_in)
       else
         print(vim.inspect(res))
       end

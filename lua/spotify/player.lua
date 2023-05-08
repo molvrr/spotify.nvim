@@ -15,6 +15,15 @@ local get_playback_state = authenticate(function()
   end
 end)
 
+local async_get_playback_state = authenticate(function(f) -- NOTE: Talvez essa possa ser a função padrão
+  local resp = Curl.get('https://api.spotify.com/v1/me/player', {
+    headers = {
+      authorization = 'Bearer ' .. vim.g['spotify-token']
+    },
+    callback = f
+  })
+end)
+
 local transfer_playback = authenticate(function(device)
   Curl.put('https://api.spotify.com/v1/me/player', {
     headers = {
@@ -112,6 +121,7 @@ local play_track = authenticate(function(track)
 end)
 
 return {
+  async_get_playback_state = async_get_playback_state,
   decrease_volume = decrease_volume,
   get_devices = get_devices,
   get_playback_state = get_playback_state,
