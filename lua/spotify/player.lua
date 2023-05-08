@@ -42,11 +42,11 @@ local set_volume = authenticate(function(vol)
       authorization = 'Bearer ' .. vim.g['spotify-token']
     },
     query = {
-      volume_percent = vol % 101
+      volume_percent = vol
     },
     callback = function(res)
       if res.status == 204 then
-        print(string.format('Volume: %d%%', vol))
+        print(string.format('Volume: %d%%', vol, 100))
       else
         print('Erro ao atualizar volume')
       end
@@ -59,7 +59,7 @@ local increase_volume = authenticate(function(inc)
     vim.g['spotify-volume'] = get_playback_state().device.volume_percent
   end
 
-  vim.g['spotify-volume'] = vim.g['spotify-volume'] + inc
+  vim.g['spotify-volume'] = math.min(vim.g['spotify-volume'] + inc, 100)
 
   set_volume(vim.g['spotify-volume'])
 end)
@@ -69,7 +69,7 @@ local decrease_volume = authenticate(function(dec)
     vim.g['spotify-volume'] = get_playback_state().device.volume_percent
   end
 
-  vim.g['spotify-volume'] = vim.g['spotify-volume'] - dec
+  vim.g['spotify-volume'] = math.max(vim.g['spotify-volume'] - dec, 0)
 
   set_volume(vim.g['spotify-volume'])
 end)
