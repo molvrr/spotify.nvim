@@ -1,6 +1,13 @@
 # Spotify.nvim
 :warning: **PLUGIN EM VERSÃO EXTREMAMENTE ALFA. ALGUMA COISA COM CERTEZA VAI QUEBRAR. USE POR SUA CONTA E RISCO** :warning:
 
+## Demo
+
+
+https://github.com/molvrr/spotify.nvim/assets/43669753/9230808a-ff3d-4816-89a0-e5946b29bf90
+
+
+
 ## Setup
 
 ### Pré-requisitos
