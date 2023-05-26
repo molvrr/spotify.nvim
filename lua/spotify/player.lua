@@ -104,7 +104,7 @@ local play_track = authenticate(function(track)
     }
   end
 
-  if devices[1] then
+  if devices[1] then -- TODO: Remover isso, pois não tem um comportamento consistente
     if not devices[1].is_active then
       transfer_playback(devices[1].id)
     end
@@ -120,12 +120,34 @@ local play_track = authenticate(function(track)
   end
 end)
 
+local resume_playback = authenticate(function(track)
+  Curl.put('https://api.spotify.com/v1/me/player/play', {
+    headers = {
+      authorization = 'Bearer ' .. vim.g['spotify-token']
+    },
+    callback = function()
+    end
+  })
+end)
+
+local pause_playback = authenticate(function()
+  Curl.put('https://api.spotify.com/v1/me/player/pause', {
+    headers = {
+      authorization = 'Bearer ' .. vim.g['spotify-token']
+    },
+    callback = function()
+    end
+  })
+end)
+
 return {
   async_get_playback_state = async_get_playback_state,
   decrease_volume = decrease_volume,
   get_devices = get_devices,
   get_playback_state = get_playback_state,
   increase_volume = increase_volume,
+  pause_playback = pause_playback,
   play_track = play_track,
+  resume_playback = resume_playback,
   set_volume = set_volume,
 }
